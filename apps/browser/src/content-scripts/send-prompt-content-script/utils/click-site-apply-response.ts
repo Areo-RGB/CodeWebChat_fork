@@ -62,10 +62,10 @@ export const click_site_apply_response = () => {
     scan_scheduled = false
     const control = get_apply_response_control()
 
-    if (!control) {
-      last_clicked_control = null
-      return
-    }
+    // Keep waiting for a matching control to appear. Do not clear the last
+    // clicked control while it is temporarily disabled/hidden, otherwise its
+    // re-enable mutation would arm the same button for another automatic click.
+    if (!control) return
 
     if (control === last_clicked_control) return
 
