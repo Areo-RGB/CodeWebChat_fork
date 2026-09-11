@@ -21,8 +21,10 @@ jobs:
       - name: Apply refactor patch
         shell: bash
         run: |
-          cat .github/cdp-payload/part00 .github/cdp-payload/part01 .github/cdp-payload/part02 .github/cdp-payload/part03 > /tmp/cdp-refactor.patch.gz.b64
+          cat .github/cdp-payload/a0 .github/cdp-payload/a1 .github/cdp-payload/a2 .github/cdp-payload/a3 .github/cdp-payload/part00b .github/cdp-payload/part01 .github/cdp-payload/part02 .github/cdp-payload/part03 > /tmp/cdp-refactor.patch.gz.b64
+          test "$(wc -c < /tmp/cdp-refactor.patch.gz.b64)" -eq 14280
           base64 -d /tmp/cdp-refactor.patch.gz.b64 > /tmp/cdp-refactor.patch.gz
+          gzip -t /tmp/cdp-refactor.patch.gz
           gzip -dc /tmp/cdp-refactor.patch.gz > /tmp/cdp-refactor.patch
           git apply --check /tmp/cdp-refactor.patch
           git apply /tmp/cdp-refactor.patch
