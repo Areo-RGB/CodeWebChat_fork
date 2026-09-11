@@ -1,11 +1,11 @@
 {
   "schema_version": 2,
-  "commit": "21b217459d9d0825d8dd09e8906212b87e00ae56",
-  "indexed_at": "2026-09-11T08:25:05Z",
+  "commit": "c1edb818f39d4dde2d86ca3bd0765b6393f678f7",
+  "indexed_at": "2026-09-11T08:25:14Z",
   "project": "home-paul-Desktop-vs_code_extensions-CodeWebChat_fork",
   "nodes": 5960,
   "edges": 16411,
   "original_size": 23855104,
-  "compressed_size": 3354652,
+  "compressed_size": 3354555,
   "compression_level": 3
 }
