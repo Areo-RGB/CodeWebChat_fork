@@ -1,0 +1,40 @@
+name: Build VSIX Artifact
+
+on:
+  push:
+    branches:
+      - build-vsix-artifact
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.10.0
+          run_install: false
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build VS Code extension
+        working-directory: apps/editor
+        run: pnpm build
+
+      - name: Upload VSIX
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-web-chat-vsix
+          path: apps/editor/*.vsix
+          if-no-files-found: error
