@@ -8,6 +8,19 @@ import {
 } from './apply-response-styles'
 import { show_response_ready_notification } from './show-response-ready-notification'
 
+const wait = (ms: number) =>
+  new Promise<void>((resolve) => setTimeout(resolve, ms))
+
+const clipboard_has_text = async (): Promise<boolean | null> => {
+  try {
+    const text = await navigator.clipboard.readText()
+    return text.trim().length > 0
+  } catch (error) {
+    console.warn('Unable to verify clipboard contents', error)
+    return null
+  }
+}
+
 export function add_apply_response_button(params: {
   client_id: number
   raw_instructions?: string
@@ -34,7 +47,23 @@ export function add_apply_response_button(params: {
     set_button_disabled_state(apply_response_button)
     requestAnimationFrame(async () => {
       await params.perform_copy(params.footer)
-      await new Promise((resolve) => setTimeout(resolve, 500))
+      await wait(500)
+
+      const clipboard_state = await clipboard_has_text()
+      if (clipboard_state === false) {
+        console.warn('Clipboard is empty after copy; retrying once...')
+        await wait(300)
+        await params.perform_copy(params.footer)
+        await wait(500)
+
+        const retry_clipboard_state = await clipboard_has_text()
+        if (retry_clipboard_state === false) {
+          console.warn(
+            'Clipboard is still empty after retry; not sending apply-response.'
+          )
+          return
+        }
+      }
 
       let client_id = params.client_id
       let raw_instructions = params.raw_instructions
