@@ -1,0 +1,53 @@
+name: Apply AI Studio CDP Refactor
+
+on:
+  push:
+    branches:
+      - integrated-browser-ai-studio-cdp
+
+permissions:
+  contents: write
+
+jobs:
+  apply-and-verify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          ref: integrated-browser-ai-studio-cdp
+
+      - name: Apply refactor patch
+        shell: bash
+        run: |
+          base64 -d .github/cdp-refactor.patch.gz.b64 > /tmp/cdp-refactor.patch.gz
+          gzip -dc /tmp/cdp-refactor.patch.gz > /tmp/cdp-refactor.patch
+          git apply --check /tmp/cdp-refactor.patch
+          git apply /tmp/cdp-refactor.patch
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Compile VS Code extension
+        run: pnpm --dir apps/editor compile
+
+      - name: Commit verified refactor
+        shell: bash
+        run: |
+          rm .github/cdp-refactor.patch.gz.b64
+          rm .github/workflows/apply-cdp-refactor.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Refactor AI Studio transport to Integrated Browser CDP [skip ci]"
+          git push origin HEAD:integrated-browser-ai-studio-cdp
