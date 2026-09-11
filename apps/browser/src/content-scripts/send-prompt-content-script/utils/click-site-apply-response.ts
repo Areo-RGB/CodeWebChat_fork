@@ -1,4 +1,5 @@
 const apply_response_text = 'apply response'
+const apply_response_click_delay_ms = 300
 const apply_response_selector =
   'button, [role="button"], input[type="button"], input[type="submit"], a'
 
@@ -69,8 +70,13 @@ export const click_site_apply_response = () => {
 
     if (control === last_clicked_control) return
 
+    // Mark it immediately so mutations during the short settling delay cannot
+    // schedule duplicate clicks for the same control.
     last_clicked_control = control
-    control.click()
+    window.setTimeout(() => {
+      if (!control.isConnected) return
+      control.click()
+    }, apply_response_click_delay_ms)
   }
 
   const schedule_scan = () => {
