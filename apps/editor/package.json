@@ -1256,5 +1256,8 @@
     "ui": "workspace:*",
     "utf-8-validate": "^6.0.5",
     "ws": "^8.21.3"
-  }
+  },
+  "enabledApiProposals": [
+    "browser"
+  ]
 }

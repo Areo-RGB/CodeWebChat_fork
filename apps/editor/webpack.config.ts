@@ -15,8 +15,7 @@ const config: ((env: any, argv: any) => webpack.Configuration)[] = [
       mode: is_production ? 'production' : 'development',
       target: 'node',
       entry: {
-        extension: './src/extension.ts',
-        'websocket-server-process': './src/services/websocket-server-process.ts'
+        extension: './src/extension.ts'
       },
       output: {
         path: path.resolve(__dirname, 'out'),
